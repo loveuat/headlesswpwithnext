@@ -157,7 +157,7 @@ const Header = () => {
                                 openIndex === item ? "block" : "hidden"
                               }`}
                             >
-                              {menuItems.submenu.map((submenuItem, index) => (
+                              {menuItems.childItems.map((submenuItem, index) => (
                                 <Link
                                   href={submenuItem.path}
                                   key={index}

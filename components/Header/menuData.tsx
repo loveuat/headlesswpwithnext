@@ -1,5 +1,6 @@
 import { Menu } from "@/types/menu";
-
+import { GET_PRIMARY_MENU } from 'lib/queries';
+import { fetchGraphQL } from 'lib/api';
 const menuData: Menu[] = [
   {
     id: 1,

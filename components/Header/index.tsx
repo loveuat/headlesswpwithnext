@@ -5,7 +5,18 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import ThemeToggler from "./ThemeToggler";
 import menuData from "./menuData";
+import { GET_PRIMARY_MENU } from 'lib/queries';
+import { fetchGraphQL } from 'lib/api';
 
+export async function getStaticProps() {
+  const data = await fetchGraphQL(GET_PRIMARY_MENU);
+
+  return {
+    props: {
+      menuItems: data.menu.menuItems.nodes,
+    },
+  };
+}
 const Header = () => {
   // Navbar toggle
   const [navbarOpen, setNavbarOpen] = useState(false);
@@ -105,18 +116,18 @@ const Header = () => {
                   }`}
                 >
                   <ul className="block lg:flex lg:space-x-12">
-                    {menuData.map((menuItem, index) => (
+                    {menuItems.map(item, index) => (
                       <li key={index} className="group relative">
-                        {menuItem.path ? (
+                        {item.url ? (
                           <Link
-                            href={menuItem.path}
+                            href={item.url}
                             className={`flex py-2 text-base lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 ${
-                              usePathName === menuItem.path
+                              usePathName === item.url
                                 ? "text-primary dark:text-white"
                                 : "text-dark hover:text-primary dark:text-white/70 dark:hover:text-white"
                             }`}
                           >
-                            {menuItem.title}
+                            {item.label}
                           </Link>
                         ) : (
                           <>
@@ -124,7 +135,7 @@ const Header = () => {
                               onClick={() => handleSubmenu(index)}
                               className="flex cursor-pointer items-center justify-between py-2 text-base text-dark group-hover:text-primary dark:text-white/70 dark:group-hover:text-white lg:mr-0 lg:inline-flex lg:px-0 lg:py-6"
                             >
-                              {menuItem.title}
+                              {item.label}
                               <span className="pl-3">
                                 <svg width="25" height="24" viewBox="0 0 25 24">
                                   <path
@@ -141,7 +152,7 @@ const Header = () => {
                                 openIndex === index ? "block" : "hidden"
                               }`}
                             >
-                              {menuItem.submenu.map((submenuItem, index) => (
+                              {menuItems.submenu.map((submenuItem, index) => (
                                 <Link
                                   href={submenuItem.path}
                                   key={index}

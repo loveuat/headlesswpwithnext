@@ -8,7 +8,7 @@ import { GET_PRIMARY_MENU } from "@/lib/queries";
 import { fetchGraphQL } from "@/lib/api";
 
 const Header = () => {
-  console.log("GRAPHQL URL:", process.env.WP_API_URL);
+  console.log("GRAPHQL URL:", process.env.NEXT_PUBLIC_WP_API_URL);
   const pathname = usePathname();
 
   const [menuItems, setMenuItems] = useState([]);

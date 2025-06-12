@@ -4,8 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import ThemeToggler from "./ThemeToggler";
-import { GET_PRIMARY_MENU } from "@/lib/queries";
 import { fetchGraphQL } from "@/lib/api";
+import { GET_PRIMARY_MENU } from "@/lib/queries";
+
 
 const Header = () => {
   const pathname = usePathname();

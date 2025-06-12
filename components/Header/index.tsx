@@ -5,18 +5,22 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import ThemeToggler from "./ThemeToggler";
 import menuData from "./menuData";
-import { GET_PRIMARY_MENU } from 'lib/queries';
 import { fetchGraphQL } from 'lib/api';
+import { GET_PRIMARY_MENU } from 'lib/queries';
 
-export async function getStaticProps() {
-  const data = await fetchGraphQL(GET_PRIMARY_MENU);
-
-  return {
-    props: {
-      menuItems: data.menu.menuItems.nodes,
-    },
+const [menuItems, setMenuItems] = useState([]);
+useEffect(() => {
+  const fetchMenu = async () => {
+    try {
+      const data = await fetchGraphQL(GET_PRIMARY_MENU);
+      setMenuItems(data.menu?.menuItems?.nodes || []);
+    } catch (error) {
+      console.error("Failed to fetch menu items:", error);
+    }
   };
-}
+
+  fetchMenu();
+}, []);
 const Header = () => {
   // Navbar toggle
   const [navbarOpen, setNavbarOpen] = useState(false);
@@ -116,8 +120,8 @@ const Header = () => {
                   }`}
                 >
                   <ul className="block lg:flex lg:space-x-12">
-                    {menuItems.map(item, index) => (
-                      <li key={index} className="group relative">
+                    {menuItems.length > 0 && menuItems.map(item => (
+                      <li key={item} className="group relative">
                         {item.url ? (
                           <Link
                             href={item.url}
@@ -132,7 +136,7 @@ const Header = () => {
                         ) : (
                           <>
                             <p
-                              onClick={() => handleSubmenu(index)}
+                              onClick={() => handleSubmenu(item)}
                               className="flex cursor-pointer items-center justify-between py-2 text-base text-dark group-hover:text-primary dark:text-white/70 dark:group-hover:text-white lg:mr-0 lg:inline-flex lg:px-0 lg:py-6"
                             >
                               {item.label}
@@ -149,7 +153,7 @@ const Header = () => {
                             </p>
                             <div
                               className={`submenu relative left-0 top-full rounded-sm bg-white transition-[top] duration-300 group-hover:opacity-100 dark:bg-dark lg:invisible lg:absolute lg:top-[110%] lg:block lg:w-[250px] lg:p-4 lg:opacity-0 lg:shadow-lg lg:group-hover:visible lg:group-hover:top-full ${
-                                openIndex === index ? "block" : "hidden"
+                                openIndex === item ? "block" : "hidden"
                               }`}
                             >
                               {menuItems.submenu.map((submenuItem, index) => (

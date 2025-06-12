@@ -8,20 +8,21 @@ import menuData from "./menuData";
 import { fetchGraphQL } from 'lib/api';
 import { GET_PRIMARY_MENU } from 'lib/queries';
 
-const [menuItems, setMenuItems] = useState([]);
-useEffect(() => {
-  const fetchMenu = async () => {
-    try {
-      const data = await fetchGraphQL(GET_PRIMARY_MENU);
-      setMenuItems(data.menu?.menuItems?.nodes || []);
-    } catch (error) {
-      console.error("Failed to fetch menu items:", error);
-    }
-  };
-
-  fetchMenu();
-}, []);
 const Header = () => {
+  const [menuItems, setMenuItems] = useState([]);
+
+  useEffect(() => {
+    const fetchMenu = async () => {
+      try {
+        const data = await fetchGraphQL(GET_PRIMARY_MENU);
+        setMenuItems(data.menu?.menuItems?.nodes || []);
+      } catch (error) {
+        console.error("Error fetching menu:", error);
+      }
+    };
+
+    fetchMenu();
+  }, []);
   // Navbar toggle
   const [navbarOpen, setNavbarOpen] = useState(false);
   const navbarToggleHandler = () => {

@@ -12,22 +12,29 @@ const Header = () => {
   console.log("GRAPHQL URL:", process.env.NEXT_PUBLIC_WP_API_URL);
   const pathname = usePathname();
 
-  const [menuItems, setMenuItems] = useState([]);
+  const [menuItems, setMenu] = useState([]);
   const [navbarOpen, setNavbarOpen] = useState(false);
   const [sticky, setSticky] = useState(false);
   const [openIndex, setOpenIndex] = useState(-1);
 
-  // Fetch WordPress Menu
-  useEffect(() => {
-    const fetchMenu = async () => {
-      try {
-        const data = await fetchGraphQL(GET_PRIMARY_MENU);
-        setMenuItems(data.menu?.menuItems?.nodes || []);
-      } catch (err) {
-        console.error("Menu fetch failed:", err);
-      }
-    };
-    fetchMenu();
+ useEffect(() => {
+    async function loadMenu() {
+      const res = await fetch("https://mywp.atulbramhe.site/wp-json/custom/v1/menu/primary");
+      const flat = await res.json();
+
+      // Convert to nested structure
+      const buildTree = (items, parent = "0") =>
+        items
+          .filter(item => item.parent === parent)
+          .map(item => ({
+            ...item,
+            children: buildTree(items, item.id.toString())
+          }));
+
+      setMenu(buildTree(flat));
+    }
+
+    loadMenu();
   }, []);
 
   // Sticky navbar
@@ -86,7 +93,7 @@ const Header = () => {
           }`}
         >
           <ul className="lg:flex lg:space-x-8">
-            {menuItems.map((item, index) => (
+            {menuItems.map((item) => (
               <li key={item.id} className="group relative">
                 {item.url ? (
                   <Link
@@ -97,7 +104,7 @@ const Header = () => {
                         : "text-dark hover:text-primary dark:text-white/70 dark:hover:text-white"
                     }`}
                   >
-                    {item.label}
+                    {item.title}
                   </Link>
                 ) : (
                   <div>
@@ -118,13 +125,13 @@ const Header = () => {
                         openIndex === index ? "block" : "hidden"
                       }`}
                     >
-                      {item.childItems?.nodes.map((subItem) => (
-                        <li key={subItem.id}>
+                      {item.children.map((child) => (
+                        <li key={child.id}>
                           <Link
-                            href={subItem.url}
+                            href={child.url}
                             className="block px-4 py-2 text-sm text-dark hover:text-primary dark:text-white/70 dark:hover:text-white"
                           >
-                            {subItem.label}
+                            {child.title}
                           </Link>
                         </li>
                       ))}

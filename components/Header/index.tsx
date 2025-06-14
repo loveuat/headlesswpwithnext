@@ -15,7 +15,8 @@ const Header = () => {
   const [navbarOpen, setNavbarOpen] = useState(false);
   const [sticky, setSticky] = useState(false);
   const [openIndex, setOpenIndex] = useState(-1);
-const [primaryLogo, setLogo] = useState<{ sourceUrl: string; altText?: string } | null>(null);
+   const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [logoAlt, setLogoAlt] = useState<string>('Logo');
   useEffect(() => {
     async function loadMenu() {
       const res = await fetch("https://mywp.atulbramhe.site/wp-json/custom/v1/menu/primary");
@@ -35,12 +36,28 @@ const [primaryLogo, setLogo] = useState<{ sourceUrl: string; altText?: string } 
 
     loadMenu();
   }, []);
- // Load logo
+
+
   useEffect(() => {
-    fetchGraphQL(GET_THEME_OPTIONS).then((data) => {
-      const themeOptions = data?.acfOptionsThemeOptions?.themeOptions;
-      setLogo(themeOptions?.primary_logo || null);
-    });
+    const getLogo = async () => {
+      try {
+        const data = await fetchGraphQL(GET_THEME_OPTIONS);
+
+        const logo =
+          data?.data?.acfOptionsThemeOptions?.themeOptions?.primaryLogo;
+
+        if (logo?.sourceUrl) {
+          setLogoUrl(logo.sourceUrl);
+          setLogoAlt(logo.altText || 'Logo');
+        } else {
+          console.warn('Logo not found in GraphQL response:', data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch logo:', error);
+      }
+    };
+
+    getLogo();
   }, []);
   // Sticky navbar
   useEffect(() => {
@@ -65,8 +82,8 @@ const [primaryLogo, setLogo] = useState<{ sourceUrl: string; altText?: string } 
       <div className="container mx-auto flex items-center justify-between px-4">
         <Link href="/" className={`w-48 ${sticky ? "py-3" : "py-6"}`}>
           <Image
-            src={primaryLogo.sourceUrl}
-            alt={primaryLogo.altText}
+            src={logoUrl}
+            alt={logoAlt}
             width={140}
             height={30}
             className="dark:hidden"

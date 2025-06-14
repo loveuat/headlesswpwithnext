@@ -41,8 +41,6 @@ const Header = () => {
       setLogo(themeOptions?.primary_logo);
     });
   }, []);
-
-  if (!primaryLogo) return null;
   // Sticky navbar
   useEffect(() => {
     const handleScroll = () => {
@@ -54,7 +52,7 @@ const Header = () => {
 
   const navbarToggleHandler = () => setNavbarOpen(!navbarOpen);
   const handleSubmenu = (index) => setOpenIndex(openIndex === index ? -1 : index);
-
+  
   return (
     <header
       className={`left-0 top-0 z-40 flex w-full items-center ${

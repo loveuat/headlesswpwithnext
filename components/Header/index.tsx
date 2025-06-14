@@ -15,8 +15,8 @@ const Header = () => {
   const [navbarOpen, setNavbarOpen] = useState(false);
   const [sticky, setSticky] = useState(false);
   const [openIndex, setOpenIndex] = useState(-1);
-  const [primaryLogo, setLogo] = useState([]);
- useEffect(() => {
+  const [primaryLogo, setLogo] = useState<{ sourceUrl: string; altText?: string } | null>(null);
+  useEffect(() => {
     async function loadMenu() {
       const res = await fetch("https://mywp.atulbramhe.site/wp-json/custom/v1/menu/primary");
       const flat = await res.json();
@@ -35,17 +35,14 @@ const Header = () => {
 
     loadMenu();
   }, []);
-   useEffect(() => {
-   async function getStaticProps() {
-  const data = await fetchGraphQL(GET_THEME_OPTIONS);
-  return {
-    props: {
-      themeOptions: data.acfOptionsThemeOptions.themeOptions,
-    },
-    revalidate: 60,
-  };
-}
+ useEffect(() => {
+    fetchGraphQL(GET_THEME_OPTIONS).then((data) => {
+      const themeOptions = data?.acfOptionsThemeOptions?.themeOptions;
+      setLogo(themeOptions?.primary_logo);
+    });
   }, []);
+
+  if (!primaryLogo) return null;
   // Sticky navbar
   useEffect(() => {
     const handleScroll = () => {
@@ -69,8 +66,8 @@ const Header = () => {
       <div className="container mx-auto flex items-center justify-between px-4">
         <Link href="/" className={`w-48 ${sticky ? "py-3" : "py-6"}`}>
           <Image
-            src={GetThemeOptions.primary_logo.sourceUrl}
-            alt={GetThemeOptions.primary_logo.altText}
+            src={primaryLogo.sourceUrl}
+            alt={primaryLogo.altText}
             width={140}
             height={30}
             className="dark:hidden"

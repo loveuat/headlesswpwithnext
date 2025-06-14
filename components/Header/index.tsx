@@ -6,17 +6,16 @@ import { useEffect, useState } from "react";
 import ThemeToggler from "./ThemeToggler";
 import { fetchGraphQL } from "@/lib/api";
 import { GET_PRIMARY_MENU } from "@/lib/queries";
-
+import { GET_THEME_OPTIONS } from "@/lib/queries";
 
 const Header = () => {
-  console.log("GRAPHQL URL:", process.env.NEXT_PUBLIC_WP_API_URL);
   const pathname = usePathname();
 
   const [menuItems, setMenu] = useState([]);
   const [navbarOpen, setNavbarOpen] = useState(false);
   const [sticky, setSticky] = useState(false);
   const [openIndex, setOpenIndex] = useState(-1);
-
+  const [primaryLogo, setLogo] = useState([]);
  useEffect(() => {
     async function loadMenu() {
       const res = await fetch("https://mywp.atulbramhe.site/wp-json/custom/v1/menu/primary");
@@ -36,7 +35,17 @@ const Header = () => {
 
     loadMenu();
   }, []);
-
+   useEffect(() => {
+   async function getStaticProps() {
+  const data = await fetchGraphQL(GET_THEME_OPTIONS);
+  return {
+    props: {
+      themeOptions: data.acfOptionsThemeOptions.themeOptions,
+    },
+    revalidate: 60,
+  };
+}
+  }, []);
   // Sticky navbar
   useEffect(() => {
     const handleScroll = () => {
@@ -60,8 +69,8 @@ const Header = () => {
       <div className="container mx-auto flex items-center justify-between px-4">
         <Link href="/" className={`w-48 ${sticky ? "py-3" : "py-6"}`}>
           <Image
-            src="/images/logo/logo.svg"
-            alt="Logo"
+            src={GetThemeOptions.primary_logo.sourceUrl}
+            alt={GetThemeOptions.primary_logo.altText}
             width={140}
             height={30}
             className="dark:hidden"

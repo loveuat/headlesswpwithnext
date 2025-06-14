@@ -15,7 +15,7 @@ const Header = () => {
   const [navbarOpen, setNavbarOpen] = useState(false);
   const [sticky, setSticky] = useState(false);
   const [openIndex, setOpenIndex] = useState(-1);
-  const [primaryLogo, setLogo] = useState<{ sourceUrl: string; altText?: string } | null>(null);
+const [primaryLogo, setLogo] = useState<{ sourceUrl: string; altText?: string } | null>(null);
   useEffect(() => {
     async function loadMenu() {
       const res = await fetch("https://mywp.atulbramhe.site/wp-json/custom/v1/menu/primary");
@@ -35,10 +35,11 @@ const Header = () => {
 
     loadMenu();
   }, []);
- useEffect(() => {
+ // Load logo
+  useEffect(() => {
     fetchGraphQL(GET_THEME_OPTIONS).then((data) => {
       const themeOptions = data?.acfOptionsThemeOptions?.themeOptions;
-      setLogo(themeOptions?.primary_logo);
+      setLogo(themeOptions?.primary_logo || null);
     });
   }, []);
   // Sticky navbar

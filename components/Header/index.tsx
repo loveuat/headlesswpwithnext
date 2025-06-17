@@ -79,8 +79,8 @@ const Header = () => {
           : "absolute bg-transparent"
       }`}
     >
-       <div className="w-full bg-gray-800 text-white text-sm">
-      <div className="max-w-7xl mx-auto px-4 py-2 flex justify-between items-center">
+      <div className="container mx-auto flex items-center justify-between px-4">
+        <div className="max-w-7xl mx-auto px-4 py-2 flex justify-between items-center">
         {/* Left: Contact Info */}
         <div className="flex items-center space-x-6">
           <a href="mailto:info@example.com" className="flex items-center hover:underline">
@@ -109,7 +109,7 @@ const Header = () => {
           </a>
         </div>
       </div>
-    </div>
+      </div>
       <div className="container mx-auto flex items-center justify-between px-4">
         <Link href="/" className={`w-48 ${sticky ? "py-3" : "py-6"}`}>
           <Image

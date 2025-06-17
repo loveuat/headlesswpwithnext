@@ -73,13 +73,44 @@ const Header = () => {
   
   return (
     <header
-      className={`left-0 top-0 z-40 flex w-full items-center`}
-    >
-      <div className={`container mx-auto flex items-center justify-between px-4 ${
+      className={`left-0 top-0 z-40 flex w-full items-center ${
         sticky
           ? "fixed z-[9999] bg-white bg-opacity-80 shadow backdrop-blur-sm dark:bg-gray-900 dark:shadow dark:bg-opacity-90"
           : "absolute bg-transparent"
-      }`}>
+      }`}
+    >
+       <div className="w-full bg-gray-800 text-white text-sm">
+      <div className="max-w-7xl mx-auto px-4 py-2 flex justify-between items-center">
+        {/* Left: Contact Info */}
+        <div className="flex items-center space-x-6">
+          <a href="mailto:info@example.com" className="flex items-center hover:underline">
+            <i className="fas fa-envelope text-yellow-400 mr-2"></i>
+            info@example.com
+          </a>
+          <a href="tel:+911234567890" className="flex items-center hover:underline">
+            <i className="fas fa-phone-alt text-green-400 mr-2"></i>
+            +91 12345 67890
+          </a>
+        </div>
+
+        {/* Right: Social Icons */}
+        <div className="flex space-x-4">
+          <a href="#" className="hover:text-blue-400" aria-label="Facebook">
+            <i className="fab fa-facebook-f"></i>
+          </a>
+          <a href="#" className="hover:text-blue-300" aria-label="Twitter">
+            <i className="fab fa-twitter"></i>
+          </a>
+          <a href="#" className="hover:text-pink-500" aria-label="Instagram">
+            <i className="fab fa-instagram"></i>
+          </a>
+          <a href="#" className="hover:text-blue-600" aria-label="LinkedIn">
+            <i className="fab fa-linkedin-in"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+      <div className="container mx-auto flex items-center justify-between px-4">
         <Link href="/" className={`w-48 ${sticky ? "py-3" : "py-6"}`}>
           <Image
             src="/images/logo/logo-2.svg"

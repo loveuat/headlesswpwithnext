@@ -73,20 +73,20 @@ const Header = () => {
   
   return (
     <header
-      className={`left-0 top-0 z-40 flex w-full items-center ${
+      className={`left-0 top-0 z-40 flex w-full items-center`}
+    >
+      <div className={`container mx-auto flex items-center justify-between px-4 ${
         sticky
           ? "fixed z-[9999] bg-white bg-opacity-80 shadow backdrop-blur-sm dark:bg-gray-900 dark:shadow dark:bg-opacity-90"
           : "absolute bg-transparent"
-      }`}
-    >
-      <div className="container mx-auto flex items-center justify-between px-4">
+      }`}>
         <Link href="/" className={`w-48 ${sticky ? "py-3" : "py-6"}`}>
           <Image
-            src={logoUrl}
-            alt={logoAlt}
+            src="/images/logo/logo-2.svg"
+            alt="Logo Dark"
             width={140}
             height={30}
-            className="dark:hidden"
+            className="hidden dark:block"
           />
           <Image
             src="/images/logo/logo-2.svg"

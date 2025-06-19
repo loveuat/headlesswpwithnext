@@ -4,123 +4,60 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import ThemeToggler from "./ThemeToggler";
-import { fetchGraphQL } from "@/lib/api";
-import { GET_PRIMARY_MENU } from "@/lib/queries";
-import { GET_THEME_OPTIONS } from "@/lib/queries";
-
-const Header = () => {
-  const pathname = usePathname();
-
-  const [menuItems, setMenu] = useState([]);
+import menuData from "./menuData";
+const Header = ({themeOptions, flatMenu}) => {
   const [navbarOpen, setNavbarOpen] = useState(false);
+  const navbarToggleHandler = () => {
+    setNavbarOpen(!navbarOpen);
+  };
+  // Sticky Navbar
   const [sticky, setSticky] = useState(false);
-  const [openIndex, setOpenIndex] = useState(-1);
-   const [logoUrl, setLogoUrl] = useState<string | null>(null);
-  const [logoAlt, setLogoAlt] = useState<string>('Logo');
-  useEffect(() => {
-    async function loadMenu() {
-      const res = await fetch("https://mywp.atulbramhe.site/wp-json/custom/v1/menu/primary");
-      const flat = await res.json();
-
-      // Convert to nested structure
-      const buildTree = (items, parent = "0") =>
-        items
-          .filter(item => item.parent === parent)
-          .map(item => ({
-            ...item,
-            children: buildTree(items, item.id.toString())
-          }));
-
-      setMenu(buildTree(flat));
+  const handleStickyNavbar = () => {
+    if (window.scrollY >= 80) {
+      setSticky(true);
+    } else {
+      setSticky(false);
     }
-
-    loadMenu();
-  }, []);
-
-
+  };
   useEffect(() => {
-    const getLogo = async () => {
-      try {
-        const data = await fetchGraphQL(GET_THEME_OPTIONS);
+    window.addEventListener("scroll", handleStickyNavbar);
+  });
 
-        const logo =
-          data?.data?.acfOptionsThemeOptions?.themeOptions?.primaryLogo;
+  // submenu handler
+  const [openIndex, setOpenIndex] = useState(-1);
+  const handleSubmenu = (index) => {
+    if (openIndex === index) {
+      setOpenIndex(-1);
+    } else {
+      setOpenIndex(index);
+    }
+  };
 
-        if (logo?.sourceUrl) {
-          setLogoUrl(logo.sourceUrl);
-          setLogoAlt(logo.altText || 'Logo');
-        } else {
-          console.warn('Logo not found in GraphQL response:', data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch logo:', error);
-      }
-    };
-
-    getLogo();
-  }, []);
-  // Sticky navbar
-  useEffect(() => {
-    const handleScroll = () => {
-      setSticky(window.scrollY >= 80);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const navbarToggleHandler = () => setNavbarOpen(!navbarOpen);
-  const handleSubmenu = (index) => setOpenIndex(openIndex === index ? -1 : index);
-  
+  const usePathName = usePathname();
+  const logo = themeOptions?.siteSettings?.primaryLogo?.node;
+  console.log(flatMenu);
   return (
-    <header
-      className={`left-0 top-0 z-40 flex w-full items-center ${
-        sticky
-          ? "fixed z-[9999] bg-white bg-opacity-80 shadow backdrop-blur-sm dark:bg-gray-900 dark:shadow dark:bg-opacity-90"
-          : "absolute bg-transparent"
-      }`}
-    >
-      <div className="container mx-auto flex items-center justify-between px-4">
-        <div className="max-w-7xl mx-auto px-4 py-2 flex justify-between items-center">
-        {/* Left: Contact Info */}
-        <div className="flex items-center space-x-6">
-          <a href="mailto:info@example.com" className="flex items-center hover:underline">
-            <i className="fas fa-envelope text-yellow-400 mr-2"></i>
-            info@example.com
-          </a>
-          <a href="tel:+911234567890" className="flex items-center hover:underline">
-            <i className="fas fa-phone-alt text-green-400 mr-2"></i>
-            +91 12345 67890
-          </a>
-        </div>
-
-        {/* Right: Social Icons */}
-        <div className="flex space-x-4">
-          <a href="#" className="hover:text-blue-400" aria-label="Facebook">
-            <i className="fab fa-facebook-f"></i>
-          </a>
-          <a href="#" className="hover:text-blue-300" aria-label="Twitter">
-            <i className="fab fa-twitter"></i>
-          </a>
-          <a href="#" className="hover:text-pink-500" aria-label="Instagram">
-            <i className="fab fa-instagram"></i>
-          </a>
-          <a href="#" className="hover:text-blue-600" aria-label="LinkedIn">
-            <i className="fab fa-linkedin-in"></i>
-          </a>
-        </div>
-      </div>
-      </div>
-      <div className="container mx-auto flex items-center justify-between px-4">
+    <>
+    {/* <header
+        className={`header left-0 top-0 z-40 flex w-full items-center ${
+          sticky
+            ? "dark:bg-gray-dark dark:shadow-sticky-dark fixed z-[9999] bg-white !bg-opacity-80 shadow-sticky backdrop-blur-sm transition"
+            : "absolute bg-transparent"
+        }`}
+      >
+       <div className="container mx-auto flex items-center justify-between px-4">
+        
         <Link href="/" className={`w-48 ${sticky ? "py-3" : "py-6"}`}>
-          <Image
-            src="/images/logo/logo-2.svg"
+        
+       <Image
+           src={logo.mediaItemUrl}
             alt="Logo Dark"
-            width={140}
-            height={30}
-            className="hidden dark:block"
+            width={322}
+            height={76}
+            className="dark:hidden"
           />
           <Image
-            src="/images/logo/logo-2.svg"
+            src={logo.mediaItemUrl}
             alt="Logo Dark"
             width={140}
             height={30}
@@ -140,61 +77,73 @@ const Header = () => {
           </button>
         </div>
 
-        <nav
-          className={`absolute top-full right-0 z-30 w-[250px] rounded bg-white px-6 py-4 dark:bg-gray-900 lg:static lg:block lg:w-auto lg:bg-transparent lg:dark:bg-transparent lg:p-0 ${
-            navbarOpen ? "block" : "hidden"
-          }`}
+       <nav
+                  id="navbarCollapse"
+                  className={`navbar absolute right-0 z-30 w-[250px] rounded border-[.5px] border-body-color/50 bg-white px-6 py-4 duration-300 dark:border-body-color/20 dark:bg-dark lg:visible lg:static lg:w-auto lg:border-none lg:!bg-transparent lg:p-0 lg:opacity-100 ${
+                    navbarOpen
+                      ? "visibility top-full opacity-100"
+                      : "invisible top-[120%] opacity-0"
+                  }`}
+                >
+                  <ul className="block lg:flex lg:space-x-12">
+  {flatMenu.map((item, index) => (
+    <li key={index} className="group relative">
+      {item.url ? (
+        <Link
+          href={item.url}
+          className="flex py-2 text-base lg:mr-0 lg:inline-flex lg:px-0 lg:py-6"
         >
-          <ul className="lg:flex lg:space-x-8">
-            {menuItems.map((item, index) => (
-              <li key={item.id} className="group relative">
-                {item.url ? (
-                  <Link
-                    href={item.url}
-                    className={`block py-2 lg:inline-block lg:py-6 ${
-                      pathname === item.url
-                        ? "text-primary"
-                        : "text-dark hover:text-primary dark:text-white/70 dark:hover:text-white"
-                    }`}
-                  >
-                    {item.title}
-                  </Link>
-                ) : (
-                  <div>
-                    <button
-                      onClick={() => handleSubmenu(index)}
-                      className="flex w-full items-center justify-between py-2 text-dark group-hover:text-primary dark:text-white/70 dark:group-hover:text-white lg:py-6"
-                    >
-                      {item.label}
-                      <svg className="ml-2" width="20" height="20" viewBox="0 0 20 20">
-                        <path
-                          fill="currentColor"
-                          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414L10 13.414 5.293 8.707a1 1 0 010-1.414z"
-                        />
-                      </svg>
-                    </button>
-                    <ul
-                      className={`absolute left-0 top-full z-20 mt-2 w-48 rounded bg-white shadow-lg dark:bg-gray-800 lg:invisible lg:opacity-0 group-hover:visible group-hover:opacity-100 transition ${
-                        openIndex === index ? "block" : "hidden"
-                      }`}
-                    >
-                      {item.children.map((child) => (
-                        <li key={child.id}>
-                          <Link
-                            href={child.url}
-                            className="block px-4 py-2 text-sm text-dark hover:text-primary dark:text-white/70 dark:hover:text-white"
-                          >
-                            {child.title}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </li>
+          {item.title}
+        </Link>
+      ) : (
+        <>
+          <p
+            onClick={() => handleSubmenu(index)}
+            className="flex cursor-pointer items-center justify-between py-2 text-base text-dark group-hover:text-primary dark:text-white/70 dark:group-hover:text-white lg:mr-0 lg:inline-flex lg:px-0 lg:py-6"
+          >
+            {item.title}
+            <span className="pl-3">
+              <svg width="25" height="24" viewBox="0 0 25 24">
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M6.29289 8.8427C6.68342 8.45217 7.31658 8.45217 7.70711 8.8427L12 13.1356L16.2929 8.8427C16.6834 8.45217 17.3166 8.45217 17.7071 8.8427C18.0976 9.23322 18.0976 9.86639 17.7071 10.2569L12 15.964L6.29289 10.2569C5.90237 9.86639 5.90237 9.23322 6.29289 8.8427Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </span>
+          </p>
+          <div
+  className={`submenu relative left-0 top-full rounded-sm bg-white transition-[top] duration-300 group-hover:opacity-100 dark:bg-dark 
+    ${
+      openIndex === index
+        ? 'block lg:visible lg:top-full lg:opacity-100'
+        : 'hidden lg:invisible lg:top-[110%] lg:opacity-0'
+    }
+    lg:absolute lg:block lg:w-[250px] lg:p-4 lg:shadow-lg
+  `}
+>
+
+            <pre className="text-xs text-red-500 bg-gray-100 p-2">
+      {JSON.stringify(item.submenu, null, 2)}
+    </pre>
+            {item.submenu.map((submenuItem, subIndex) => (
+              
+              <Link
+                href={submenuItem.url}
+                key={subIndex}
+                className="block rounded py-2.5 text-sm text-dark hover:text-primary dark:text-white/70 dark:hover:text-white lg:px-3"
+              >
+                {submenuItem.title}
+              </Link>
             ))}
-          </ul>
-        </nav>
+          </div>
+        </>
+      )}
+    </li>
+  ))}
+</ul>
+                </nav>
 
         <div className="hidden lg:flex items-center space-x-4">
           <Link
@@ -212,7 +161,148 @@ const Header = () => {
           <ThemeToggler />
         </div>
       </div>
-    </header>
+    </header> */}
+     <header
+        className={`header left-0 top-0 z-40 flex w-full items-center ${
+          sticky
+            ? "dark:bg-gray-dark dark:shadow-sticky-dark fixed z-[9999] bg-white !bg-opacity-80 shadow-sticky backdrop-blur-sm transition"
+            : "absolute bg-transparent"
+        }`}
+      >
+        <div className="container">
+          <div className="relative -mx-4 flex items-center justify-between">
+            <div className="w-60 max-w-full px-4 xl:mr-12">
+              <Link
+                href="/"
+                className={`header-logo block w-full ${
+                  sticky ? "py-5 lg:py-2" : "py-8"
+                } `}
+              >
+                <Image
+                  src={logo.mediaItemUrl}
+                  alt="logo"
+                  width={140}
+                  height={30}
+                  className="w-full dark:hidden"
+                />
+                <Image
+                  src={logo.mediaItemUrl}
+                  alt="logo"
+                  width={140}
+                  height={30}
+                  className="hidden w-full dark:block"
+                />
+              </Link>
+            </div>
+            <div className="flex w-full items-center justify-between px-4">
+              <div>
+                <button
+                  onClick={navbarToggleHandler}
+                  id="navbarToggler"
+                  aria-label="Mobile Menu"
+                  className="absolute right-4 top-1/2 block translate-y-[-50%] rounded-lg px-3 py-[6px] ring-primary focus:ring-2 lg:hidden"
+                >
+                  <span
+                    className={`relative my-1.5 block h-0.5 w-[30px] bg-black transition-all duration-300 dark:bg-white ${
+                      navbarOpen ? " top-[7px] rotate-45" : " "
+                    }`}
+                  />
+                  <span
+                    className={`relative my-1.5 block h-0.5 w-[30px] bg-black transition-all duration-300 dark:bg-white ${
+                      navbarOpen ? "opacity-0 " : " "
+                    }`}
+                  />
+                  <span
+                    className={`relative my-1.5 block h-0.5 w-[30px] bg-black transition-all duration-300 dark:bg-white ${
+                      navbarOpen ? " top-[-8px] -rotate-45" : " "
+                    }`}
+                  />
+                </button>
+                <nav
+                  id="navbarCollapse"
+                  className={`navbar absolute right-0 z-30 w-[250px] rounded border-[.5px] border-body-color/50 bg-white px-6 py-4 duration-300 dark:border-body-color/20 dark:bg-dark lg:visible lg:static lg:w-auto lg:border-none lg:!bg-transparent lg:p-0 lg:opacity-100 ${
+                    navbarOpen
+                      ? "visibility top-full opacity-100"
+                      : "invisible top-[120%] opacity-0"
+                  }`}
+                >
+                  <ul className="block lg:flex lg:space-x-12">
+                    {flatMenu.map((menuItem, index) => (
+                      <li key={index} className="group relative">
+                        {menuItem.children && menuItem.children.length > 0 ? (
+                           <>
+                            <p
+                              onClick={() => handleSubmenu(index)}
+                              className="flex cursor-pointer items-center justify-between py-2 text-base text-dark group-hover:text-primary dark:text-white/70 dark:group-hover:text-white lg:mr-0 lg:inline-flex lg:px-0 lg:py-6"
+                            >
+                              {menuItem.title}
+                              <span className="pl-3">
+                                <svg width="25" height="24" viewBox="0 0 25 24">
+                                  <path
+                                    fillRule="evenodd"
+                                    clipRule="evenodd"
+                                    d="M6.29289 8.8427C6.68342 8.45217 7.31658 8.45217 7.70711 8.8427L12 13.1356L16.2929 8.8427C16.6834 8.45217 17.3166 8.45217 17.7071 8.8427C18.0976 9.23322 18.0976 9.86639 17.7071 10.2569L12 15.964L6.29289 10.2569C5.90237 9.86639 5.90237 9.23322 6.29289 8.8427Z"
+                                    fill="currentColor"
+                                  />
+                                </svg>
+                              </span>
+                            </p>
+                            <div
+                              className={`submenu relative left-0 top-full rounded-sm bg-white transition-[top] duration-300 group-hover:opacity-100 dark:bg-dark lg:invisible lg:absolute lg:top-[110%] lg:block lg:w-[250px] lg:p-4 lg:opacity-0 lg:shadow-lg lg:group-hover:visible lg:group-hover:top-full ${
+                                openIndex === index ? "block" : "hidden"
+                              }`}
+                            >
+                              {menuItem.children.map((submenuItem, index) => (
+                                <Link
+                                  href={submenuItem.url}
+                                  key={index}
+                                  className="block rounded py-2.5 text-sm text-dark hover:text-primary dark:text-white/70 dark:hover:text-white lg:px-3"
+                                >
+                                  {submenuItem.title}
+                                </Link>
+                              ))}
+                            </div>
+                          </>
+                        ) : (
+                         <Link
+                            href={menuItem.url}
+                            className={`flex py-2 text-base lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 ${
+                              usePathName === menuItem.url
+                                ? "text-primary dark:text-white"
+                                : "text-dark hover:text-primary dark:text-white/70 dark:hover:text-white"
+                            }`}
+                          >
+                            {menuItem.title}
+                          </Link>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              </div>
+              <div className="flex items-center justify-end pr-16 lg:pr-0">
+                <Link
+                  href="/signin"
+                  className="hidden px-7 py-3 text-base font-medium text-dark hover:opacity-70 dark:text-white md:block"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/signup"
+                  className="ease-in-up shadow-btn hover:shadow-btn-hover hidden rounded-sm bg-primary px-8 py-3 text-base font-medium text-white transition duration-300 hover:bg-opacity-90 md:block md:px-9 lg:px-6 xl:px-9"
+                >
+                  Sign Up
+                </Link>
+                <div>
+                  <ThemeToggler />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+    </>
   );
 };
 

@@ -10,7 +10,48 @@ const Video = () => {
   const [isOpen, setOpen] = useState(false);
 
   return (
-    <section className="relative z-10 py-16 md:py-20 lg:py-28">
+    <>
+    <section className=" text-gray-600 body-font">
+  <div className="container px-5 py-24 mx-auto">
+    <div className="flex flex-col text-center w-full mb-20">
+      <h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">Our Team</h1>
+      <p className="lg:w-2/3 mx-auto leading-relaxed text-base">Whatever cardigan tote bag tumblr hexagon brooklyn asymmetrical gentrify, subway tile poke farm-to-table. Franzen you probably haven't heard of them.</p>
+    </div>
+    <div className="m-6 p-4 ">
+    <div className="flex flex-wrap gap-3 justify-center">
+        <a href="" className="bg-gray-100 rounded-md px-3 py-2 ">Topic Name</a>
+
+        <a href="" className="bg-gray-100 rounded-md px-3 py-2 ">Topic Name</a>
+
+        <a href="" className="bg-gray-100 rounded-md px-3 py-2 ">Topic Name</a>
+
+        <a href="" className="bg-gray-100 rounded-md px-3 py-2 ">Topic Name</a>
+
+        <a href="" className="bg-gray-100 rounded-md px-3 py-2 ">Topic Name</a>
+
+        <a href="" className="bg-gray-100 rounded-md px-3 py-2 ">Topic Name</a>
+
+        <a href="" className="bg-gray-100 rounded-md px-3 py-2 ">Topic Name</a>
+
+        <a href="" className="bg-gray-100 rounded-md px-3 py-2 ">Topic Name</a>
+
+        <a href="" className="bg-gray-100 rounded-md px-3 py-2 ">Topic Name</a>
+
+        <a href="" className="bg-gray-100 rounded-md px-3 py-2 ">Topic Name</a>
+
+        <a href="" className="bg-gray-100 rounded-md px-3 py-2 ">Topic Name</a>
+
+       
+
+
+    </div>
+
+
+</div>
+  </div>
+  <div className="absolute bottom-0 left-0 right-0 z-[-1] h-full w-full bg-[url(/images/video/shape.svg)] bg-cover bg-center bg-no-repeat"></div>
+</section>
+    {/* <section className="relative z-10 py-16 md:py-20 lg:py-28">
       <div className="container">
         <SectionTitle
           title="We are ready to help"
@@ -59,7 +100,8 @@ const Video = () => {
       />
 
       <div className="absolute bottom-0 left-0 right-0 z-[-1] h-full w-full bg-[url(/images/video/shape.svg)] bg-cover bg-center bg-no-repeat"></div>
-    </section>
+    </section> */}
+    </>
   );
 };
 

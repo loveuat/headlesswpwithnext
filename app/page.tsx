@@ -10,27 +10,30 @@ import Pricing from "@/components/Pricing";
 import Testimonials from "@/components/Testimonials";
 import Video from "@/components/Video";
 import { Metadata } from "next";
-
+import { fetchGraphQL } from "@/lib/api";
+import { GET_HOME_BANNER } from "@/lib/queries";
 export const metadata: Metadata = {
-  title: "Free Next.js Template for Startup and SaaS",
+  title: "Modern Web Development Agency",
   description: "This is Home for Startup Nextjs Template",
   // other metadata
 };
-
-export default function Home() {
+export default async function Home() {
+  const bannerresponse = await fetchGraphQL(GET_HOME_BANNER);
+  const bannerData = bannerresponse?.data?.page?.homePage?.homeBanner;
+  const servicesData = bannerresponse?.data?.page?.homePage?.services?.ourServices;
   return (
     <>
       <ScrollUp />
-      <Hero />
-      <Features />
-      <Video />
-      <Brands />
+      <Hero bannerData={bannerData}/>
+      <Features servicesData={servicesData}/>
+      {/* <Video /> */}
+      {/* <Brands /> */}
       <AboutSectionOne />
-      <AboutSectionTwo />
+      {/* <AboutSectionTwo /> */}
       <Testimonials />
-      <Pricing />
-      <Blog />
-      <Contact />
+      {/* <Pricing />
+      <Blog /> */}
+      {/* <Contact /> */}
     </>
   );
 }

@@ -30,6 +30,7 @@ const testimonialData: Testimonial[] = [
     image: "/images/testimonials/auth-03.png",
     star: 5,
   },
+  
 ];
 
 const Testimonials = () => {

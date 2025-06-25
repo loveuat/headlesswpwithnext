@@ -1,6 +1,7 @@
 export type Feature = {
-  id: number;
-  icon: JSX.Element;
-  title: string;
-  paragraph: string;
+  boxIcon: string;
+  boxTitle: string;
+  boxSubTitle: string;
+  boxLink: object;
+  boxContent: string
 };

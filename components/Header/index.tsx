@@ -5,6 +5,10 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import ThemeToggler from "./ThemeToggler";
 import menuData from "./menuData";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import * as solidIcons from '@fortawesome/free-solid-svg-icons';
+import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
+import { faMobile } from '@fortawesome/free-solid-svg-icons';
 const Header = ({themeOptions, flatMenu}) => {
   const [navbarOpen, setNavbarOpen] = useState(false);
   const navbarToggleHandler = () => {
@@ -35,7 +39,8 @@ const Header = ({themeOptions, flatMenu}) => {
 
   const usePathName = usePathname();
   const logo = themeOptions?.siteSettings?.primaryLogo?.node;
-  console.log(flatMenu);
+  const darklogo = themeOptions?.siteSettings?.darkLogo?.node;
+  
   return (
     <>
     {/* <header
@@ -186,7 +191,7 @@ const Header = ({themeOptions, flatMenu}) => {
                   className="w-full dark:hidden"
                 />
                 <Image
-                  src={logo.mediaItemUrl}
+                  src={darklogo.mediaItemUrl}
                   alt="logo"
                   width={140}
                   height={30}
@@ -282,17 +287,25 @@ const Header = ({themeOptions, flatMenu}) => {
               </div>
               <div className="flex items-center justify-end pr-16 lg:pr-0">
                 <Link
-                  href="/signin"
-                  className="hidden px-7 py-3 text-base font-medium text-dark hover:opacity-70 dark:text-white md:block"
+                  target="_new"
+                  href="https://wa.me/918770570764?text=Hello%20I%20want%20to%20chat"
+                  className="text-white md:block px-4"
                 >
-                  Sign In
+                  <FontAwesomeIcon icon={faWhatsapp} className="w-6 h-6 flex items-center justify-center text-white-950" />
                 </Link>
                 <Link
+                  target="_new"
+                  href="https://wa.me/918770570764?text=Hello%20I%20want%20to%20chat"
+                  className="text-white md:block px-4"
+                >
+                  <FontAwesomeIcon icon={faMobile} className="w-6 h-6 flex items-center justify-center text-white" />
+                </Link>
+                {/* <Link
                   href="/signup"
                   className="ease-in-up shadow-btn hover:shadow-btn-hover hidden rounded-sm bg-primary px-8 py-3 text-base font-medium text-white transition duration-300 hover:bg-opacity-90 md:block md:px-9 lg:px-6 xl:px-9"
                 >
                   Sign Up
-                </Link>
+                </Link> */}
                 <div>
                   <ThemeToggler />
                 </div>

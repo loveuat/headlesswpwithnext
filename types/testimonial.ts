@@ -1,8 +1,17 @@
+type TestimonialData ={
+  testimonialClientCompany: string;
+  testimonialClientName:string;
+  testimonialStarCount:number;
+}
+type TestimonialWrapper ={
+  testimonialData: TestimonialData;
+}
 export type Testimonial = {
-  id: number;
+  slug: string;
+  title: string;
+  status:string;
+  id: string;
   name: string;
-  designation: string;
-  content: string;
-  image: string;
-  star: number;
+  excerpt: string;
+  testimonialsWrapper:TestimonialWrapper;
 };

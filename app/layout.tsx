@@ -39,6 +39,7 @@ const flatListToHierarchical = (
     return tree;
 };
 const hierarchicalList = flatListToHierarchical(nodes);
+
   return (
     <html suppressHydrationWarning lang="en">
       {/*
@@ -51,7 +52,7 @@ const hierarchicalList = flatListToHierarchical(nodes);
         <Providers>
           <Header themeOptions={themeOptions} flatMenu={hierarchicalList}/>
           {children}
-          <Footer />
+          <Footer themeOptions={themeOptions}/>
           <ScrollToTop />
         </Providers>
       </body>

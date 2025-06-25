@@ -4,18 +4,18 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
-import { Testimonial } from "@/types/testimonial";
+import { TechStackType } from "@/types/techstacks";
+import TechStackCard from "./TechStackCards";
 import SectionTitleWithBorder from "../Common/SectionTitleWithBorder";
-import SingleTestimonial from "./SingleTestimonial";
-const Testimonials = ({testimonialData}) => {
+
+const TeckStacks = ({ techStacksData }) => {
   return (
     <>
-    
-    <section id="testimonial" className="bg-gray-light dark:bg-black relative z-10 py-16 md:py-20 lg:py-28">
+    <section className="relative z-10 py-16 md:py-20 lg:py-28">
       <div className="container">
         <SectionTitleWithBorder
-          title="Love From Our People"
-          paragraph="Love from our people fuels everything we do. Hear directly from our clients and partners who’ve experienced the impact of our work firsthand."
+          title="Our Technical Expertise"
+          paragraph="Our technical expertise spans the full spectrum of modern web development. From front-end technologies like React, Next.js, and Tailwind CSS to robust back-end solutions using Node.js, PHP, and WordPress"
           center
         />
         <Swiper
@@ -29,27 +29,25 @@ const Testimonials = ({testimonialData}) => {
   freeMode={true}
   slidesPerView="auto"
   allowTouchMove={false}
-  spaceBetween={30}
+  spaceBetween={20}
   breakpoints={{
     640: {
-      slidesPerView: 2,
+     slidesPerView: 2,
       spaceBetween: 30,
     },
     1024: {
-      slidesPerView: 3,
+      slidesPerView: 5,
       spaceBetween: 40,
     },
   }}
-  className="mySwiper"
+  className="techStack"
     >
-        <div className="grid grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
-          
-          {testimonialData.map((testimonial) => (
-            <SwiperSlide key={testimonial.id}>
-            <SingleTestimonial key={testimonial.id} testimonial={testimonial} />
+        <div className="">
+          {techStacksData.map((techStackData, index) => (
+            <SwiperSlide key={index} className="!w-auto">
+             <TechStackCard key={techStackData.id} techStackData={techStackData}/>
             </SwiperSlide>
           ))}
-          
         </div>
         </Swiper>
       </div>
@@ -186,4 +184,4 @@ const Testimonials = ({testimonialData}) => {
   );
 };
 
-export default Testimonials;
+export default TeckStacks;
